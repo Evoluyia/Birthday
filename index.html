@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🎂 Eine kleine Überraschung</title>
+<style>
+:root{--pink:#ff5c8a;--pink2:#ffb3c7;--cream:#fff7ef;--ink:#3b2330}
+*{box-sizing:border-box} body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:radial-gradient(circle at 20% 10%,#ffd8e5,transparent 30%),linear-gradient(135deg,#fff3f7,#ffe7c7);overflow-x:hidden}
+.wrap{min-height:100vh;display:grid;place-items:center;padding:28px}.card{width:min(760px,100%);text-align:center;background:#ffffffd9;backdrop-filter:blur(12px);border:1px solid #fff;border-radius:32px;padding:34px 22px 28px;box-shadow:0 24px 80px #8f4b631f}
+h1{font-size:clamp(2.2rem,8vw,4.5rem);line-height:.95;margin:0 0 12px}.subtitle{font-size:1.05rem;opacity:.75;margin-bottom:22px}
+.screen{display:none}.screen.active{display:block}.btn{border:0;border-radius:999px;padding:14px 24px;font-weight:800;font-size:1rem;cursor:pointer;background:var(--pink);color:#fff;box-shadow:0 10px 25px #ff5c8a45;transition:.2s}.btn:hover{transform:translateY(-2px)}.btn.secondary{background:#fff;color:var(--pink);border:2px solid #ffd0dd;box-shadow:none}
+.name{color:var(--pink)}.cake{position:relative;width:min(440px,90vw);height:310px;margin:10px auto 0}.plate{position:absolute;bottom:12px;left:8%;width:84%;height:28px;border-radius:50%;background:#fff;box-shadow:0 8px 18px #0002}
+.layer{position:absolute;left:12%;width:76%;border-radius:16px 16px 12px 12px;box-shadow:inset 0 -8px 0 #00000008}.l1{bottom:40px;height:78px;background:#d982a7}.l2{bottom:105px;height:70px;background:#f2a7bf;width:70%;left:15%}.icing{position:absolute;left:15%;bottom:157px;width:70%;height:27px;background:#fff4f0;border-radius:14px 14px 8px 8px}
+.candle{position:absolute;bottom:180px;width:18px;height:64px;border-radius:6px;background:repeating-linear-gradient(90deg,#fff 0 5px,#ff7da4 5px 10px);z-index:3}.candle:nth-child(1){left:22%}.candle:nth-child(2){left:31%}.candle:nth-child(3){left:40%}.candle:nth-child(4){left:49%}.candle:nth-child(5){left:58%}.candle:nth-child(6){left:67%}.candle.off{animation:fall .35s forwards}.flame{position:absolute;left:50%;top:-27px;transform:translateX(-50%);width:15px;height:25px;background:#ffb300;border-radius:50% 50% 45% 45%;box-shadow:0 0 20px #ff9d00;animation:flicker .15s infinite alternate}.off .flame{display:none}
+@keyframes flicker{to{transform:translateX(-50%) scale(.85) rotate(3deg)}}@keyframes fall{to{opacity:0;transform:translateY(15px) rotate(20deg)}}
+.meter{height:12px;background:#ffe0e8;border-radius:99px;overflow:hidden;margin:8px auto 18px;width:min(420px,90%)}.fill{height:100%;width:0;background:linear-gradient(90deg,#ff9fba,#ff5c8a);transition:width .08s}
+.status{font-weight:700;min-height:26px}.hint{font-size:.88rem;opacity:.65;margin:10px 0 18px}.result{font-size:clamp(2rem,8vw,4rem);margin:8px}.heart{font-size:3rem;animation:pulse 1s infinite}@keyframes pulse{50%{transform:scale(1.15)}}
+#confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:20}.conf{position:absolute;top:-20px;width:10px;height:16px;animation:conf 3.2s linear forwards}@keyframes conf{to{transform:translateY(110vh) rotate(900deg);opacity:0}}
+.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:560px;margin:26px auto 4px}
+.photo{aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:linear-gradient(135deg,#ffd6e3,#ffe8c4);border:3px solid #fff;box-shadow:0 8px 25px #00000012;display:grid;place-items:center;position:relative}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.placeholder{font-weight:800;color:#a85c76;padding:12px}
+@media(max-width:520px){.gallery{grid-template-columns:1fr 1fr}.photo{border-radius:14px}}
+.small{font-size:.8rem;opacity:.55;margin-top:18px}
+</style>
+</head>
+<body>
+<div id="confetti"></div>
+<div class="wrap"><main class="card">
+<section id="intro" class="screen active">
+<div class="heart">💗</div>
+<h1>Happy Birthday<br><span class="name" id="displayName">Yesim</span>! 🎂</h1>
+<button class="btn" onclick="start()">Zu deiner Geburtstagstorte</button>
+</section>
+
+<section id="blow" class="screen">
+<h1>🕯️ Puste die Kerzen aus!</h1>
+<p class="subtitle">Erlaube den Mikrofonzugriff und puste kräftig ins Mikrofon. 💨</p>
+<div class="cake" id="cake">
+<div class="candle"><i class="flame"></i></div><div class="candle"><i class="flame"></i></div><div class="candle"><i class="flame"></i></div>
+<div class="candle"><i class="flame"></i></div><div class="candle"><i class="flame"></i></div><div class="candle"><i class="flame"></i></div>
+<div class="icing"></div><div class="layer l2"></div><div class="layer l1"></div><div class="plate"></div>
+</div>
+<div class="meter"><div class="fill" id="fill"></div></div>
+<div class="status" id="status">Bereit? 💨</div>
+<p class="hint">Tipp: Je kräftiger du pustest, desto schneller gehen sie aus.</p>
+<button class="btn secondary" id="micBtn" onclick="enableMic()">🎙️ Mikrofon einschalten</button>
+</section>
+
+<section id="done" class="screen">
+<div class="result">🎉🎂🎉</div>
+<h1>Geschafft!</h1>
+<p class="subtitle">Alle Kerzen sind aus. Du hast die <b>Geburtstagsprüfung</b> bestanden.</p>
+
+<div style="font-size:1.08rem;line-height:1.7;max-width:610px;margin:0 auto;text-align:left">
+<p><strong>Liebe Yesim,</strong></p>
+<p>ich wünsche dir einen wunderschönen Geburtstag! Lass dich ordentlich feiern und genieße das Meer! Ich kann gar nicht in Worte fassen, wie viel du mir bedeutest. Du hast einen ganz großen Platz in meinem Herzen. Ich freue mich schon darauf, dich wiederzusehen!</p>
+<p>Alles Liebe<br><strong>Deine Anni</strong> ❤️</p>
+</div>
+
+<div class="gallery">
+  <div class="photo"><div class="placeholder">📷 Euer Foto 1</div></div>
+  <div class="photo"><div class="placeholder">📷 Euer Foto 2</div></div>
+  <div class="photo"><div class="placeholder">📷 Euer Foto 3</div></div>
+  <div class="photo"><div class="placeholder">📷 Euer Foto 4</div></div>
+</div>
+
+<p class="small">Die Platzhalter können später ganz einfach durch eure Fotos ersetzt werden.</p>
+<br>
+<button class="btn" onclick="location.reload()">Nochmal pusten 😈</button>
+</section>
+</main></div>
+<script>
+const $=id=>document.getElementById(id);
+const screens={intro:$('intro'),blow:$('blow'),done:$('done')};
+let audioCtx, analyser, stream, raf, blown=0, cooldown=0;
+
+function start(){screens.intro.classList.remove('active');screens.blow.classList.add('active')}
+async function enableMic(){
+ try{
+  stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  const src=audioCtx.createMediaStreamSource(stream);
+  analyser=audioCtx.createAnalyser(); analyser.fftSize=512; src.connect(analyser);
+  $('micBtn').textContent='🎙️ Mikrofon aktiv';
+  $('micBtn').disabled=true; $('status').textContent='Jetzt kräftig pusten! 💨';
+  monitor();
+ }catch(e){
+  $('status').textContent='Mikrofon konnte nicht aktiviert werden. Du kannst trotzdem auf den Button unten drücken.';
+  $('micBtn').textContent='💨 Kerzen manuell ausblasen';
+  $('micBtn').disabled=false; $('micBtn').onclick=manualBlow;
+ }
+}
+function monitor(){
+ const data=new Uint8Array(analyser.fftSize);
+ function loop(){
+  analyser.getByteTimeDomainData(data);
+  let sum=0; for(const x of data){const v=(x-128)/128;sum+=v*v}
+  const rms=Math.sqrt(sum/data.length);
+  const level=Math.min(100,Math.round(rms*420));
+  $('fill').style.width=level+'%';
+  if(level>20 && performance.now()>cooldown){cooldown=performance.now()+650; extinguish();}
+  raf=requestAnimationFrame(loop);
+ } loop();
+}
+function extinguish(){
+ const candles=[...document.querySelectorAll('.candle:not(.off)')];
+ if(!candles.length)return finish();
+ candles[Math.floor(Math.random()*candles.length)].classList.add('off');
+ blown++;
+ $('status').textContent=blown<6 ? `Noch ${6-blown} Kerze${6-blown===1?'':'n'}! 💨` : 'Alle Kerzen sind aus! 🎉';
+ if(blown>=6)setTimeout(finish,500);
+}
+function manualBlow(){extinguish()}
+function finish(){
+ if(stream)stream.getTracks().forEach(t=>t.stop()); cancelAnimationFrame(raf);
+ screens.blow.classList.remove('active');screens.done.classList.add('active');confetti();
+}
+function confetti(){
+ const box=$('confetti');
+ for(let i=0;i<120;i++){
+  const c=document.createElement('i');c.className='conf';
+  c.style.left=Math.random()*100+'vw';c.style.animationDelay=Math.random()*1.2+'s';
+  c.style.background=['#ff5c8a','#ffd166','#7bdff2','#b8f2a6','#cdb4db'][Math.floor(Math.random()*5)];
+  c.style.transform=`rotate(${Math.random()*360}deg)`;
+  box.appendChild(c);setTimeout(()=>c.remove(),4500);
+ }
+}
+</script>
+</body>
+</html>
